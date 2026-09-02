@@ -13,6 +13,7 @@ type Fixtures = {
   checkoutPage: CheckoutPage;
   loggedIn: InventoryPage;
   bookingApi: BookingApi;
+  problemUser: InventoryPage;
 };
 
 export const test = base.extend<Fixtures>({
@@ -40,6 +41,12 @@ export const test = base.extend<Fixtures>({
 
   bookingApi: async ({ request }, use) => {
     await use(new BookingApi(request));
+  },
+
+  problemUser: async ({ page, loginPage, inventoryPage }, use) => {
+    await loginPage.goto();
+    await loginPage.login(USERS.problem.username, USERS.problem.password);
+    await use(inventoryPage);
   },
 });
 

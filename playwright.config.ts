@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 60 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 1,
+  retries: process.env.CI ? 2 : 1,
   workers: process.env.CI ? 1 : 2,
   reporter: 'html',
 
@@ -20,6 +20,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: /bug-hunt\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'bug-hunt',
+      testMatch: /bug-hunt\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
   ],
