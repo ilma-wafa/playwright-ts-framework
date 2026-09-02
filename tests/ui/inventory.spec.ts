@@ -1,37 +1,25 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../src/pages/LoginPage';
-import { InventoryPage } from '../../src/pages/InventoryPage';
-import { USERS } from '../../src/data/users';
+import { test, expect } from '../../src/fixtures/pages';
 
 test.describe('Inventory', () => {
-  let inventoryPage: InventoryPage;
-
-  test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    inventoryPage = new InventoryPage(page);
-    await loginPage.goto();
-    await loginPage.login(USERS.standard.username, USERS.standard.password);
+  test('six products are displayed', async ({ loggedIn }) => {
+    await expect(loggedIn.items).toHaveCount(6);
   });
 
-  test('six products are displayed', async () => {
-    await expect(inventoryPage.items).toHaveCount(6);
-  });
-
-  test('products sort by price low to high', async () => {
-    await inventoryPage.sortBy('lohi');
-    const prices = await inventoryPage.getPrices();
+  test('products sort by price low to high', async ({ loggedIn }) => {
+    await loggedIn.sortBy('lohi');
+    const prices = await loggedIn.getPrices();
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
   });
 
-  test('products sort by price high to low', async () => {
-    await inventoryPage.sortBy('hilo');
-    const prices = await inventoryPage.getPrices();
+  test('products sort by price high to low', async ({ loggedIn }) => {
+    await loggedIn.sortBy('hilo');
+    const prices = await loggedIn.getPrices();
     expect(prices).toEqual([...prices].sort((a, b) => b - a));
   });
 
-  test('products sort by name A to Z', async () => {
-    await inventoryPage.sortBy('az');
-    const names = await inventoryPage.getNames();
+  test('products sort by name A to Z', async ({ loggedIn }) => {
+    await loggedIn.sortBy('az');
+    const names = await loggedIn.getNames();
     expect(names).toEqual([...names].sort());
   });
 });
